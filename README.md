@@ -1,6 +1,6 @@
 # tank
 
-> tank game
+> a tank game
 
 ## Build Setup
 

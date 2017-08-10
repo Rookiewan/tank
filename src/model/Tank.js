@@ -16,6 +16,7 @@ class Tank {
     this.bgCtx = this.bgCanvas.getContext('2d')
     this.show = false
     this.color = '#fff'
+    this.level = 1
     this.init()
   }
   init () {
@@ -84,6 +85,14 @@ class Tank {
   }
   die () {
     this.show = false
+  }
+  AiLevel (level = 1) {
+    this.level = level
+    // 转向概率
+    let turnProbability = Math.random() > (1 - level / 100)
+    if (turnProbability) {
+      this.changeDir()
+    }
   }
   changeDir () {
     let dirs = [1, 2, 3, 4].filter(d => d !== this.dir)

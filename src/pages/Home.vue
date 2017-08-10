@@ -85,6 +85,7 @@ export default {
             }
             ctx.drawImage(enemy.entity, enemy.x, enemy.y, enemy.width, enemy.height)
           }
+          enemy.AiLevel()
         })
       })
       this.updateCtx(ctx, () => {

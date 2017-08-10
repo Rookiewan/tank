@@ -16,11 +16,15 @@ export default {
         ctx: null
       },
       clientW: window.innerWidth,
-      clientH: window.innerHeight
+      clientH: window.innerHeight,
+      enemies: [],
+      maxEnemiesCount: 5,
+      existEnemiesCount: 0
     }
   },
   created () {
     this.genBgCanvas()
+    this.genEnemies(20)
   },
   mounted () {
     let canvas = this.$refs.canvas
@@ -31,8 +35,10 @@ export default {
     // tank
     let tank = new Tank(this.bg, {
       width: 30,
-      height: 30
+      height: 30,
+      color: '#fff'
     })
+    tank.born()
     let engine = new Engine(canvas, this.options)
     engine.start(ctx => {
       // 绘制背景
@@ -42,8 +48,48 @@ export default {
         ctx.fill()
       })
       this.updateCtx(ctx, () => {
+        this.enemies.map(enemy => {
+          if (this.existEnemiesCount < this.maxEnemiesCount && !enemy.show) {
+            this.existEnemiesCount++
+            enemy.born()
+          }
+          if (enemy.show) {
+            let _deltaDis = enemy.speed
+            // 边界检测
+            if ((enemy.x - _deltaDis <= 0 && enemy.dir === 4) ||
+              (enemy.y - _deltaDis <= 0 && enemy.dir === 1) ||
+              (enemy.x + enemy.width + _deltaDis >= canvas.width && enemy.dir === 2) ||
+              (enemy.y + enemy.height + _deltaDis >= canvas.height && enemy.dir === 3)
+            ) {
+              enemy.changeDir()
+            }
+            // 碰撞检测，未实现
+            switch (enemy.dir) {
+              case 1:
+                // up
+                enemy.y -= _deltaDis
+                break
+              case 2:
+                // right
+                enemy.x += _deltaDis
+                break
+              case 3:
+                // down
+                enemy.y += _deltaDis
+                break
+              case 4:
+                // left
+                enemy.x -= _deltaDis
+                break
+              default:
+            }
+            ctx.drawImage(enemy.entity, enemy.x, enemy.y, enemy.width, enemy.height)
+          }
+        })
+      })
+      this.updateCtx(ctx, () => {
         ctx.translate((canvas.width - tank.width) / 2, canvas.height - tank.height)
-        ctx.drawImage(tank.bg, 0, 0, tank.width, tank.height)
+        ctx.drawImage(tank.entity, 0, 0, tank.width, tank.height)
       })
     })
   },
@@ -82,6 +128,14 @@ export default {
         this.bg.ctx.fillStyle = '#fff'
         this.bg.ctx.fill()
       })
+    },
+    genEnemies (num) {
+      for (let i = 0; i < num; i++) {
+        this.enemies.push(new Tank(this.bg, {
+          width: 30,
+          height: 30
+        }))
+      }
     }
   }
 }

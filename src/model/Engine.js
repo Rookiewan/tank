@@ -5,6 +5,10 @@ class Engine {
     this.offCanvas = null
     this.offCtx = null
     this._options_ = Object.assign({}, options)
+    this.delta = 0
+    this.lastTime = new Date().getTime()
+    this.fps = 60
+    this.interval = 1000 / this.fps
     this.init()
   }
   init () {
@@ -21,8 +25,14 @@ class Engine {
     this.ctx.drawImage(this.offCanvas, 0, 0, this.offCanvas.width, this.offCanvas.height)
   }
   start (callback = () => {}) {
-    callback(this.offCtx)
-    this.render()
+    let now = new Date().getTime()
+    this.delta = now - this.lastTime
+    if (this.delta > this.interval) {
+      // this.lastTime = now
+      this.lastTime = now - (this.delta % this.interval)
+      callback(this.offCtx)
+      this.render()
+    }
     window.requestAnimationFrame(this.start.bind(this, callback))
   }
 }

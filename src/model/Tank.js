@@ -99,7 +99,7 @@ class Tank {
     this.dir = dirs[Math.floor(Math.random() * (dirs.length))]
     this.draw()
   }
-  checkImpact (cb = () => {}) {
+  checkImpact (els = [], cb = () => {}) {
     let _deltaDis = this.speed
     if ((this.x - _deltaDis <= 0 && this.dir === 4) ||
       (this.y - _deltaDis <= 0 && this.dir === 1) ||

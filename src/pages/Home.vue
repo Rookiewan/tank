@@ -56,7 +56,7 @@ export default {
           if (enemy.show) {
             // let _deltaDis = enemy.speed
             // 边界检测
-            enemy.checkImpact(() => {
+            enemy.checkImpact(this.enemies, () => {
               enemy.changeDir()
             })
             ctx.drawImage(enemy.entity, enemy.x, enemy.y, enemy.width, enemy.height)

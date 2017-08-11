@@ -18,7 +18,7 @@ export default {
       clientW: window.innerWidth,
       clientH: window.innerHeight,
       enemies: [],
-      maxEnemiesCount: 5,
+      maxEnemiesCount: 3,
       existEnemiesCount: 0
     }
   },
@@ -32,6 +32,7 @@ export default {
     canvas.height = this.clientH
     canvas.style.width = `${this.clientW}px`
     canvas.style.height = `${this.clientH}px`
+    canvas.style.backgroundColor = '#007EC6'
     // tank
     let tank = new Tank(this.bg, {
       width: 30,
@@ -44,8 +45,7 @@ export default {
       // 绘制背景
       this.updateCtx(ctx, () => {
         ctx.fillStyle = '#007EC6'
-        ctx.rect(0, 0, canvas.width, canvas.height)
-        ctx.fill()
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
       })
       this.updateCtx(ctx, () => {
         this.enemies.map(enemy => {
@@ -54,35 +54,11 @@ export default {
             enemy.born()
           }
           if (enemy.show) {
-            let _deltaDis = enemy.speed
+            // let _deltaDis = enemy.speed
             // 边界检测
-            if ((enemy.x - _deltaDis <= 0 && enemy.dir === 4) ||
-              (enemy.y - _deltaDis <= 0 && enemy.dir === 1) ||
-              (enemy.x + enemy.width + _deltaDis >= canvas.width && enemy.dir === 2) ||
-              (enemy.y + enemy.height + _deltaDis >= canvas.height && enemy.dir === 3)
-            ) {
+            enemy.checkImpact(() => {
               enemy.changeDir()
-            }
-            // 碰撞检测，未实现
-            switch (enemy.dir) {
-              case 1:
-                // up
-                enemy.y -= _deltaDis
-                break
-              case 2:
-                // right
-                enemy.x += _deltaDis
-                break
-              case 3:
-                // down
-                enemy.y += _deltaDis
-                break
-              case 4:
-                // left
-                enemy.x -= _deltaDis
-                break
-              default:
-            }
+            })
             ctx.drawImage(enemy.entity, enemy.x, enemy.y, enemy.width, enemy.height)
           }
           enemy.AiLevel()

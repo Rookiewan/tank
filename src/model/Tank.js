@@ -89,7 +89,7 @@ class Tank {
   AiLevel (level = 1) {
     this.level = level
     // 转向概率
-    let turnProbability = Math.random() > (1 - level / 100)
+    let turnProbability = Math.random() > (1 - level / 500)
     if (turnProbability) {
       this.changeDir()
     }
@@ -98,6 +98,36 @@ class Tank {
     let dirs = [1, 2, 3, 4].filter(d => d !== this.dir)
     this.dir = dirs[Math.floor(Math.random() * (dirs.length))]
     this.draw()
+  }
+  checkImpact (cb = () => {}) {
+    let _deltaDis = this.speed
+    if ((this.x - _deltaDis <= 0 && this.dir === 4) ||
+      (this.y - _deltaDis <= 0 && this.dir === 1) ||
+      (this.x + this.width + _deltaDis >= this._options_.canvasWidth && this.dir === 2) ||
+      (this.y + this.height + _deltaDis >= this._options_.canvasHeight && this.dir === 3)
+    ) {
+      cb()
+    }
+    // 碰撞检测，未实现
+    switch (this.dir) {
+      case 1:
+        // up
+        this.y -= _deltaDis
+        break
+      case 2:
+        // right
+        this.x += _deltaDis
+        break
+      case 3:
+        // down
+        this.y += _deltaDis
+        break
+      case 4:
+        // left
+        this.x -= _deltaDis
+        break
+      default:
+    }
   }
 }
 

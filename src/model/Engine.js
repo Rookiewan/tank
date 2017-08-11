@@ -25,15 +25,14 @@ class Engine {
     this.ctx.drawImage(this.offCanvas, 0, 0, this.offCanvas.width, this.offCanvas.height)
   }
   start (callback = () => {}) {
+    window.requestAnimationFrame(this.start.bind(this, callback))
     let now = new Date().getTime()
     this.delta = now - this.lastTime
     if (this.delta > this.interval) {
-      // this.lastTime = now
-      this.lastTime = now - (this.delta % this.interval)
-      callback(this.offCtx)
+      this.lastTime = now - Math.floor((this.delta % this.interval))
       this.render()
+      callback(this.offCtx)
     }
-    window.requestAnimationFrame(this.start.bind(this, callback))
   }
 }
 export default Engine

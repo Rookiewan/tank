@@ -77,9 +77,11 @@ class Tank {
     return `rgb(${r}, ${g}, ${b})`
   }
   born () {
-    this.x = Math.ceil(Math.random() * this._options_.canvasWidth)
-    this.y = Math.ceil(Math.random() * this._options_.canvasHeight)
-    this.color = this.randomColor()
+    if (!this._options_.isRole) {
+      this.x = Math.ceil(Math.random() * this._options_.canvasWidth)
+      this.y = Math.ceil(Math.random() * this._options_.canvasHeight)
+      this.color = this.randomColor()
+    }
     this.show = true
     this.draw()
   }
@@ -109,6 +111,30 @@ class Tank {
       cb()
     }
     // 碰撞检测，未实现
+    let impact = false
+    els.map(tank => {
+      // 两个物体左上角的距离
+      let dis = Math.sqrt(Math.pow(tank.x - this.x, 2) + Math.pow(tank.y - this.y, 2))
+      if (dis <= this.width || dis <= tank.width) {
+        if (this.dir === 1 && tank.y < this.y) {
+          // 碰撞
+          impact = true
+        } else if (this.dir === 2 && tank.x > this.x) {
+          // 碰撞
+          impact = true
+        } else if (this.dir === 3 && tank.y > this.y) {
+          // 碰撞
+          impact = true
+        } else if (this.dir === 4 && tank.x < this.x) {
+          // 碰撞
+          impact = true
+        }
+      }
+    })
+    if (impact) {
+      _deltaDis = 0
+      this.changeDir()
+    }
     switch (this.dir) {
       case 1:
         // up

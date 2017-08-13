@@ -18,7 +18,7 @@ export default {
       clientW: window.innerWidth,
       clientH: window.innerHeight,
       enemies: [],
-      maxEnemiesCount: 3,
+      maxEnemiesCount: 10,
       existEnemiesCount: 0
     }
   },
@@ -33,13 +33,17 @@ export default {
     canvas.style.width = `${this.clientW}px`
     canvas.style.height = `${this.clientH}px`
     canvas.style.backgroundColor = '#007EC6'
-    // tank
-    let tank = new Tank(this.bg, {
+    // tankRole1
+    let tankRole1 = new Tank(this.bg, {
       width: 30,
       height: 30,
-      color: '#fff'
+      color: '#fff',
+      isRole: true
     })
-    tank.born()
+    tankRole1.x = (canvas.width - tankRole1.width) / 2
+    tankRole1.y = canvas.height - tankRole1.height
+    tankRole1.born()
+    console.log(tankRole1)
     let engine = new Engine(canvas, this.options)
     engine.start(ctx => {
       // 绘制背景
@@ -56,7 +60,7 @@ export default {
           if (enemy.show) {
             // let _deltaDis = enemy.speed
             // 边界检测
-            enemy.checkImpact(this.enemies, () => {
+            enemy.checkImpact(this.enemies.concat([tankRole1]), () => {
               enemy.changeDir()
             })
             ctx.drawImage(enemy.entity, enemy.x, enemy.y, enemy.width, enemy.height)
@@ -65,8 +69,8 @@ export default {
         })
       })
       this.updateCtx(ctx, () => {
-        ctx.translate((canvas.width - tank.width) / 2, canvas.height - tank.height)
-        ctx.drawImage(tank.entity, 0, 0, tank.width, tank.height)
+        // ctx.translate((canvas.width - tankRole1.width) / 2, canvas.height - tankRole1.height)
+        ctx.drawImage(tankRole1.entity, tankRole1.x, tankRole1.y, tankRole1.width, tankRole1.height)
       })
     })
   },
